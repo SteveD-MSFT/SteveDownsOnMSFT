@@ -13,8 +13,8 @@ $paramObject = @{
 'sitecode' = 'scd'
 'environment' = 'prod'
 'contactEmail' = 'sdowns@stevendowns.com'
-'sharedkey' = 'cassistevecharlottewilllow0924101404080501'
-'onpremisesgwip' = '96.255.74.194'
+'sharedkey' = 'ljk'
+'onpremisesgwip' = '9dfsdf'
 'onpremisesaddress' = '172.16.0.0/12'
 }
 # Parameters for the New-AzResourceGroupDeployment cmdlet goes into.

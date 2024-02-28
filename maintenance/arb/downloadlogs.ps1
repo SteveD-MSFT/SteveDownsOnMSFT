@@ -9,7 +9,7 @@ Enable-PSRemoting -Force
 
 # Create credential object for remote machine
 $remoteUser = "lab\scdadmin"
-$remotePass = 'CapsFan12!'
+$remotePass = 'd!'
 $remoteSecPass = ConvertTo-SecureString $remotePass -AsPlainText -Force
 $remoteCred = New-Object System.Management.Automation.PSCredential ($remoteUser, $remoteSecPass)
 
