@@ -5,7 +5,7 @@ $Region = 'eastus'
 
 
 #Register PSGallery as a trusted repo
-Register-PSRepository -Default -InstallationPolicy Trusted
+#Register-PSRepository -Default -InstallationPolicy Trusted
 
 #Install Arc registration script from PSGallery 
 Install-Module AzsHCI.ARCinstaller -force

@@ -1,7 +1,7 @@
 # Set your custom variables here
 #$your_VHDX_path = "V:\VHDs"
 #$VM_config_Files_path = "V:\VMs"
-$your_VM_name = "node12"
+$your_VM_name = "hciva02"
 #$virtual_switch_name = "extHyperV01"  # Add your desired virtual switch name here
 #$OSISO = "V:\ISO\HCI23h2.iso"
 
@@ -57,12 +57,11 @@ Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Set-NetIPIn
 Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Set-NetIPInterface -InterfaceAlias "NIC4" -Dhcp Disabled}
 
 Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Remove-NetIPAddress -InterfaceAlias "NIC1"}
-Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {New-NetIPAddress -InterfaceAlias "NIC1" -IPAddress 172.16.40.71 -PrefixLength 12 -AddressFamily IPv4 -DefaultGateway 172.16.0.1 }
+Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {New-NetIPAddress -InterfaceAlias "NIC1" -IPAddress 172.16.40.101 -PrefixLength 12 -AddressFamily IPv4 -DefaultGateway 172.16.0.1 }
 #Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {New-NetIPAddress -InterfaceAlias "NIC1" -IPAddress 192.168.12.60 -PrefixLength 24 -AddressFamily IPv4 -DefaultGateway 192.168.12.1} 
 
 Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Set-DnsClientServerAddress -InterfaceAlias "NIC1" -ServerAddresses '10.100.0.4,10.100.0.5'}
 #Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Set-DnsClientServerAddress -InterfaceAlias "NIC1" -ServerAddresses '192.168.12.1'}
 
-
-Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All }
-Restart-VM $your_VM_name
+#Invoke-Command -VMName $your_VM_name -Credential $cred -ScriptBlock {Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All }
+Restart-VM $your_VM_name -Force

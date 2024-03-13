@@ -24,3 +24,19 @@ $itemsToDelete = $itemsToDelete | Where-Object {
 $itemsToDelete | Remove-Item -Force -Recurse
 
 Write-Host "All files on the V drive, except for root-level folders, specified exclusions, and V:\ISO (unless explicitly referenced), have been deleted."
+
+
+
+# Authenticate to Azure (you'll be prompted to log in)
+Connect-AzAccount -DeviceCode
+
+# Get all role assignments with "Identity not found" description
+$invalidAssignments = Get-AzRoleAssignment | Where-Object { $_.ObjectType -eq 'Unknown' } | Remove-AzRoleAssignment
+
+# Remove each invalid assignment
+foreach ($assignment in $invalidAssignments) {
+    Remove-AzRoleAssignment -Scope $assignment.Scope -SignInName $assignment.SignInName -RoleDefinitionName $assignment.RoleDefinitionName
+}
+
+# Disconnect from Azure
+Disconnect-AzAccount

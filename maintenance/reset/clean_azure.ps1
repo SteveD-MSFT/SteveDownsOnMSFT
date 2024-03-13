@@ -31,6 +31,14 @@ foreach ($spn in $servicePrincipalsToDelete) {
     }
 }
 
+
+$appRegistrations = Get-AzADApplication
+
+# Loop through and remove each app registration
+foreach ($app in $appRegistrations) {
+    Remove-AzADApplication -ApplicationId $app.appID
+}
+
 # Log out of Azure (only if we logged in earlier)
 #if ($null -ne (Get-AzContext)) {
 #    Disconnect-AzAccount

@@ -16,3 +16,13 @@ if (-not (Get-AzContext)) {
 
 # Retrieve information about the Microsoft.AzureStackHCI resource provider
 Get-AzResourceProvider -ProviderNamespace "Microsoft.AzureStackHCI"
+
+Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
+Unregister-AzResourceProvider -ProviderNamespace "Microsoft.GuestConfiguration"
+Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridConnectivity"
+Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AzureStackHCI"
+
+Register-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
+Register-AzResourceProvider -ProviderNamespace "Microsoft.GuestConfiguration"
+Register-AzResourceProvider -ProviderNamespace "Microsoft.HybridConnectivity"
+Register-AzResourceProvider -ProviderNamespace "Microsoft.AzureStackHCI"
