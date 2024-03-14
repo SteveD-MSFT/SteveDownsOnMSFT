@@ -5,9 +5,9 @@ $VM_config_Files_path = "V:\VMs"
 #$your_VHDX_path = "C:\ProgramData\Microsoft\Windows\Virtual Hard Disks"
 #$VM_config_Files_path = "C:\ProgramDatca\Microsoft\Windows\Hyper-V"
 
-$your_VM_name = "hciva02"
+$your_VM_name = "hciva01"
 $virtual_switch_name = "extSwitch01"  # Add your desired virtual switch name here
-$OSISO = "V:\ISO\HCI23h2.iso"
+$ISO = "V:\ISO\HCI23h2.iso"
 
 # Create a new VHDX
 New-VHD -Path "$your_VHDX_path\$your_VM_name.vhdx" -SizeBytes 127GB
@@ -61,5 +61,7 @@ Set-VmProcessor -VMName $your_VM_name -ExposeVirtualizationExtensions $true
 
 # Start the VM
 
-Add-VMDvdDrive -VMName $your_vm_name -Path $O
-#Start-VM $your_VM_name
+$dvd = Add-VMDvdDrive -VMName $your_vm_name -Path $ISO
+
+Set-VMFirmware $your_vm_name -FirstBootDevice $dvd
+Start-VM $your_VM_name

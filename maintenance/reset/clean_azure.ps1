@@ -1,45 +1,39 @@
-# Check if already connected to Azure
+$clusterName = 'HCICLS1'
+# Authenticate with Azure using device code
 if (-not (Get-AzContext)) {
     # Not connected, so log in
     Connect-AzAccount -DeviceCode
 }
 
-# Remove the "DoNotDelete" lock on storage accounts in the resource group
-$resourceGroupName = "lab-eastus-rg"
-
-# Delete all resources with "hci" in their name
-$resourcesToDelete = Get-AzResource -ResourceGroupName $resourceGroupName | Where-Object { $_.Name -like "*hci*" }
-foreach ($resource in $resourcesToDelete) {
-    Write-Host "Deleting resource $($resource.Name)..."
-    try {
-        Remove-AzResource -ResourceId $resource.ResourceId -Force
-        Write-Host "Resource deleted successfully."
-    } catch {
-        Write-Host "Failed to delete resource: $_"
-    }
+# Retrieve the subscription ID dynamically
+if (-not $subscription) {
+    $subscription = (Get-AzContext).Subscription.Id
 }
 
-# Delete AD service principals with "hci" in their name
-$servicePrincipalsToDelete = Get-AzADServicePrincipal | Where-Object { $_.DisplayName -like "*hci*" }
-foreach ($spn in $servicePrincipalsToDelete) {
-    Write-Host "Deleting AD service principal $($spn.DisplayName)..."
-    try {
-        Remove-AzADServicePrincipal -ObjectId $spn.ID
-        Write-Host "AD service principal deleted successfully."
-    } catch {
-        Write-Host "Failed to delete AD service principal: $_"
-    }
+# Retrieve the resource group name dynamically
+if (-not $rg) {
+    $rg = "lab-eastus-rg"  # Replace with your actual resource group name
 }
 
+# Retrieve the tenant ID dynamically
 
-$appRegistrations = Get-AzADApplication
-
-# Loop through and remove each app registration
-foreach ($app in $appRegistrations) {
-    Remove-AzADApplication -ApplicationId $app.appID
+if (-not $tenant) {
+    # Set the tenant ID here
+    # For example:
+    $tenant = (Get-AzContext).Tenant.Id
 }
 
-# Log out of Azure (only if we logged in earlier)
-#if ($null -ne (Get-AzContext)) {
-#    Disconnect-AzAccount
-#}
+#Get the Access Token for the registration
+$ARMtoken = (Get-AzAccessToken).Token
+
+#Get the Account ID for the registration1
+$id = (Get-AzContext).Account.Id
+
+# Now you can use the $subscription, $rg, and $tenant variables in your script
+Write-Host "Subscription ID: $subscription"
+Write-Host "Resource Group: $rg"
+Write-Host "Tenant ID: $tenant"
+
+Install-Module -Name Az.StackHCI -Force
+
+Unregister-AzStackHCI -SubscriptionId $subscription -TenantID $tenant -ComputerName $clusterName
