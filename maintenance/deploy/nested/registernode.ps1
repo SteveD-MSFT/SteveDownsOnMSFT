@@ -8,7 +8,8 @@ $Region = 'eastus'
 #Register-PSRepository -Default -InstallationPolicy Trusted
 
 #Install Arc registration script from PSGallery 
-Install-Module AzsHCI.ARCinstaller -force
+#Install-Module AzsHCI.ARCinstaller -force
+Install-Module -Name AsHciADArtifactsPreCreationTool
 
 #Install required PowerShell modules in your node for registration
 Install-Module Az.Accounts -Force

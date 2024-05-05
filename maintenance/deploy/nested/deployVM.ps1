@@ -61,7 +61,7 @@ Set-VmProcessor -VMName $your_VM_name -ExposeVirtualizationExtensions $true
 
 # Start the VM
 
-$dvd = Add-VMDvdDrive -VMName $your_vm_name -Path $ISO
+#$dvd = Add-VMDvdDrive -VMName $your_vm_name -Path $ISO
 
 Set-VMFirmware $your_vm_name -FirstBootDevice $dvd
-Start-VM $your_VM_name
+#Start-VM $your_VM_name
