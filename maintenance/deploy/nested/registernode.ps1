@@ -1,20 +1,22 @@
 #$subscription = '0325dd32-ebf8-403e-86b0-365c7d3306d9';
 #$tenant = '97960771-c18f-42a6-89b6-57720ccd169d';
-$rg = "lab-eastus-rg" 
-$Region = 'eastus'
 
 
 #Register PSGallery as a trusted repo
 #Register-PSRepository -Default -InstallationPolicy Trusted
 
 #Install Arc registration script from PSGallery 
-#Install-Module AzsHCI.ARCinstaller -force
-Install-Module -Name AsHciADArtifactsPreCreationTool
+Install-Module AzsHCI.ARCinstaller
+#Install-Module -Name AsHciADArtifactsPreCreationTool
 
 #Install required PowerShell modules in your node for registration
 Install-Module Az.Accounts -Force
 Install-Module Az.ConnectedMachine -Force
 Install-Module Az.Resources -Force
+
+$rg = "lab-eastus-rg" 
+$Region = 'eastus'
+
 
 # Authenticate with Azure using device code
 if (-not (Get-AzContext)) {
