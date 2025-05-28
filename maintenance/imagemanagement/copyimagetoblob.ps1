@@ -4,7 +4,7 @@
 $resourceGroupName = "lab-eastus-rg"
 $managedDiskName = "WIN11SSBLOB_OsDisk_1_a220fa2a9449451081601ee0e0b5688f"
 $storageAccountName = "vmimagesscd"
-$storageAccountKey = "FHOtcJP5jVSPw0eQe8Vw1DlZguzxBLIaK8lF0M020ARKwVwT6QQqmUlMAq/YDA/B3mJnZxEX5LvS+ASt5p+ZSQ=="
+$storageAccountKey = "PLACEHOLDER_API_KEY"
 $containerName = "vmimages"
 $vhdFileName = "win11ss.vhd"
 
