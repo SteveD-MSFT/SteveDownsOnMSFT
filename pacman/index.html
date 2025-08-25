@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Pacman - Clippy Edition</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #000;
+            color: #ffff00;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .game-container {
+            display: inline-block;
+            background-color: #001122;
+            border: 2px solid #0088ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        #gameBoard {
+            font-size: 18px;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            white-space: pre;
+            font-weight: bold;
+        }
+        
+        .score {
+            color: #00ff00;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+        
+        .player-info {
+            color: #ff6600;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🕹️ ASCII PACMAN - CLIPPY EDITION 🕹️</h1>
+    
+    <div class="instructions">
+        Use ARROW KEYS or WASD to move • Collect dots (•) to score points<br>
+        🔄 <strong>Reload the page to transform Pacman into Clippy!</strong>
+    </div>
+    
+    <div id="playerInfo" class="player-info"></div>
+    
+    <div class="game-container">
+        <div id="gameBoard"></div>
+        <div id="score" class="score">Score: 0</div>
+    </div>
+
+    <script>
+        // Game constants
+        const BOARD_WIDTH = 25;
+        const BOARD_HEIGHT = 15;
+        const WALL = '█';
+        const FOOD = '•';
+        const EMPTY = ' ';
+        const PACMAN_CHAR = 'C';
+        const CLIPPY_CHAR = '📎';
+        
+        // Game state
+        let board = [];
+        let player = {
+            x: 1,
+            y: 1,
+            dx: 0,
+            dy: 0
+        };
+        let score = 0;
+        let isClippy = false;
+        
+        // Check if page has been reloaded before
+        function checkClippyMode() {
+            if (localStorage.getItem('pacmanReloaded')) {
+                isClippy = true;
+                document.getElementById('playerInfo').textContent = '📎 Playing as CLIPPY! (Page was reloaded)';
+            } else {
+                localStorage.setItem('pacmanReloaded', 'true');
+                document.getElementById('playerInfo').textContent = 'C Playing as classic PACMAN (Reload to get Clippy!)';
+            }
+        }
+        
+        // Initialize the game board
+        function initBoard() {
+            board = [];
+            
+            // Create the maze layout
+            for (let y = 0; y < BOARD_HEIGHT; y++) {
+                board[y] = [];
+                for (let x = 0; x < BOARD_WIDTH; x++) {
+                    // Create walls around the border
+                    if (x === 0 || x === BOARD_WIDTH - 1 || y === 0 || y === BOARD_HEIGHT - 1) {
+                        board[y][x] = WALL;
+                    }
+                    // Add some internal walls for maze effect
+                    else if ((x % 4 === 0 && y % 3 === 0) || (x % 6 === 0 && y % 4 === 0)) {
+                        board[y][x] = WALL;
+                    }
+                    // Fill with food
+                    else {
+                        board[y][x] = FOOD;
+                    }
+                }
+            }
+            
+            // Clear starting position
+            board[player.y][player.x] = EMPTY;
+            
+            // Add some random walls for variety
+            for (let i = 0; i < 15; i++) {
+                let x = Math.floor(Math.random() * (BOARD_WIDTH - 2)) + 1;
+                let y = Math.floor(Math.random() * (BOARD_HEIGHT - 2)) + 1;
+                if (x !== player.x || y !== player.y) {
+                    board[y][x] = WALL;
+                }
+            }
+        }
+        
+        // Spawn random food
+        function spawnFood() {
+            let attempts = 0;
+            while (attempts < 50) {
+                let x = Math.floor(Math.random() * (BOARD_WIDTH - 2)) + 1;
+                let y = Math.floor(Math.random() * (BOARD_HEIGHT - 2)) + 1;
+                
+                if (board[y][x] === EMPTY && (x !== player.x || y !== player.y)) {
+                    board[y][x] = FOOD;
+                    break;
+                }
+                attempts++;
+            }
+        }
+        
+        // Render the game board
+        function render() {
+            let display = '';
+            
+            for (let y = 0; y < BOARD_HEIGHT; y++) {
+                for (let x = 0; x < BOARD_WIDTH; x++) {
+                    if (x === player.x && y === player.y) {
+                        display += isClippy ? CLIPPY_CHAR : PACMAN_CHAR;
+                    } else {
+                        display += board[y][x];
+                    }
+                }
+                display += '\n';
+            }
+            
+            document.getElementById('gameBoard').textContent = display;
+            document.getElementById('score').textContent = `Score: ${score}`;
+        }
+        
+        // Handle player movement
+        function movePlayer() {
+            let newX = player.x + player.dx;
+            let newY = player.y + player.dy;
+            
+            // Check boundaries and walls
+            if (newX >= 0 && newX < BOARD_WIDTH && 
+                newY >= 0 && newY < BOARD_HEIGHT && 
+                board[newY][newX] !== WALL) {
+                
+                player.x = newX;
+                player.y = newY;
+                
+                // Check if player collected food
+                if (board[player.y][player.x] === FOOD) {
+                    board[player.y][player.x] = EMPTY;
+                    score += 10;
+                    
+                    // Randomly spawn new food
+                    if (Math.random() < 0.7) {
+                        spawnFood();
+                    }
+                }
+            }
+        }
+        
+        // Handle keyboard input
+        function handleKeyPress(event) {
+            switch(event.key.toLowerCase()) {
+                case 'arrowup':
+                case 'w':
+                    player.dx = 0;
+                    player.dy = -1;
+                    break;
+                case 'arrowdown':
+                case 's':
+                    player.dx = 0;
+                    player.dy = 1;
+                    break;
+                case 'arrowleft':
+                case 'a':
+                    player.dx = -1;
+                    player.dy = 0;
+                    break;
+                case 'arrowright':
+                case 'd':
+                    player.dx = 1;
+                    player.dy = 0;
+                    break;
+            }
+        }
+        
+        // Game loop
+        function gameLoop() {
+            movePlayer();
+            render();
+        }
+        
+        // Initialize and start the game
+        function startGame() {
+            checkClippyMode();
+            initBoard();
+            render();
+            
+            // Add keyboard event listener
+            document.addEventListener('keydown', handleKeyPress);
+            
+            // Start game loop
+            setInterval(gameLoop, 200);
+        }
+        
+        // Start the game when page loads
+        window.onload = startGame;
+    </script>
+</body>
+</html>
